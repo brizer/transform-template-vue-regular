@@ -1,0 +1,25 @@
+{
+  "name": "transform-template-vue-regular",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brizer/transform-template-vue-regular.git"
+  },
+  "author": "brizer <brizer@163.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brizer/transform-template-vue-regular/issues"
+  },
+  "homepage": "https://github.com/brizer/transform-template-vue-regular#readme",
+  "devDependencies": {
+    "jest": "^24.7.1"
+  },
+  "dependencies": {
+    "template-parse": "^1.0.0"
+  }
+}
