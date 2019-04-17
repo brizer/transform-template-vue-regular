@@ -1,4 +1,4 @@
-# transform-template-vue-regular
+# transform-template-vue-regular [![npm](https://img.shields.io/npm/v/transform-template-vue-regular.svg?maxAge=2592000)](https://www.npmjs.com/package/transform-template-vue-regular)
 
 Transform [Vue](https://github.com/vuejs/vue) template to [Regular](https://github.com/regularjs/regular) template.
 
