@@ -139,4 +139,18 @@ describe("test transform", () => {
     const regularStr = transform.transform(source)
     expect(regularStr).toEqual(expected);
   });
+
+
+  test("test no closure custom tag", () => {
+    const source = unpad(
+`
+<ux-button :value="item" @click="agree()" />
+`);
+    const expected = unpad(
+`
+<ux-button value="{item}" on-click="{this.agree()}">
+</ux-button>`);
+    const regularStr = transform.transform(source)
+    expect(regularStr).toBe(expected);
+  })
 });
