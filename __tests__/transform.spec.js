@@ -153,4 +153,193 @@ describe("test transform", () => {
     const regularStr = transform.transform(source)
     expect(regularStr).toBe(expected);
   })
+
 });
+
+
+
+describe("test transform of build-in directives", () => {
+    test('v-show --> r-hide simple variable',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-show="ok"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-hide="{!(ok)}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('v-show --> r-hide expression',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-show="getSomeValue(param)"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-hide="{!(this.getSomeValue(param))}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('v-show --> r-hide many expression',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-show="getSomeValue(param) && getAnother()"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-hide="{!(this.getSomeValue(param) && this.getAnother())}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('v-show --> r-hide complet expression',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-show="getSomeValue(param) && getAnother() === param"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-hide="{!(this.getSomeValue(param) && this.getAnother() === param)}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('v-show --> r-hide expression param number',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-show="getSomeValue(22)"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-hide="{!(this.getSomeValue(22))}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('v-show --> r-hide expression param string',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-show="getSomeValue('brizer')"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-hide="{!(this.getSomeValue('brizer'))}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('some directive not support yet, just throw error',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-xixi="ok"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p v-xixi="ok"></p>
+</div>
+`       )
+
+        expect(function(){
+            transform.transform(source)
+        }).toThrow("directive v-xixi is not supported yet");
+        
+    })
+
+
+
+    test('v-html --> r-html param',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-html="param"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-html="{param}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+
+    test('v-html --> r-html express',()=>{
+        const source = unpad(
+`
+<div>
+    <p v-html="getHtml('hehe')"></p>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <p r-html="{this.getHtml('hehe')}"></p>
+</div>
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+})
