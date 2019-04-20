@@ -420,6 +420,101 @@ describe("test transform of build-in directives", () => {
         
     })
 
+    test('template v-if v-else --> {#if}{#else}{/if} param',()=>{
+        const source = unpad(
+`
+<template v-if="param">
+    123
+</template>
+<template v-else>
+    456
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#if param}
+    123
+{#else}
+    456
+{/if}
+
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('template v-if v-else --> {#if}{#else}{/if} express in param',()=>{
+        const source = unpad(
+`
+<template v-if="param">
+    <div>
+        <template v-if="getSome()">
+            <p>hehe</p>
+        </template>
+        <template v-else>
+            <p>xixi</p>
+        </template>
+    </div>
+</template>
+<template v-else>
+    none
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#if param}
+    <div>
+        {#if this.getSome()}
+            <p>hehe</p>
+        {#else}
+            <p>xixi</p>
+        {/if}
+        
+    </div>
+{#else}
+    none
+{/if}
+
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('template v-if v-else-if v-else --> {#if}{#elseif}{#else}{/if} express in param',()=>{
+        const source = unpad(
+`
+<template v-if="param>3">
+    123
+</template>
+<template v-else-if="param>1">
+    456
+</template>
+<template v-else>
+    789
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#if param>3}
+    123
+{#elseif param>1}
+    456
+{#else}
+    789
+{/if}
 
 
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
 })
