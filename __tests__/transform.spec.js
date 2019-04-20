@@ -342,4 +342,84 @@ describe("test transform of build-in directives", () => {
         expect(regularStr).toBe(expected);
         
     })
+
+
+
+
+    test('template v-if --> {#if}{/if} param',()=>{
+        const source = unpad(
+`
+<template v-if="param">
+    123
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#if param}
+    123
+{/if}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+    test('template v-if --> {#if}{/if} express',()=>{
+        const source = unpad(
+`
+<template v-if="getShow() >=10">
+    <div>
+         <span>
+         123
+         </span>
+    </div>
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#if this.getShow() >=10}
+    <div>
+         <span>
+         123
+         </span>
+    </div>
+{/if}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+    test('template v-if --> {#if}{/if} param in express',()=>{
+        const source = unpad(
+`
+<template v-if="getShow() >=10">
+    <div>
+         <span>
+         <template v-if="hehe">123</template>
+         </span>
+    </div>
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#if this.getShow() >=10}
+    <div>
+         <span>
+         {#if hehe}123{/if}
+         </span>
+    </div>
+{/if}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+
+
 })
