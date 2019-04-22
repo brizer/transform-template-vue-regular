@@ -447,6 +447,24 @@ describe("test transform of build-in directives", () => {
         expect(regularStr).toBe(expected);
         
     })
+
+
+    test('tag single closed v-if --> {#if}{/if} param',()=>{
+        const source = unpad(
+`
+<img src="//www.baidu.com" v-if="show">
+`       )
+
+        const expected = unpad(
+`
+{#if show}<img src="//www.baidu.com">{/if}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
     test('tag v-if v-else --> {#if}{#else}{/if} param',()=>{
         const source = unpad(
 `
@@ -660,7 +678,7 @@ describe("test transform of build-in directives", () => {
 `
 {#list item.list as item2}
     <div on-click="{this.doSom()}">{item2.value}</div>
-        {#list item2.list as img}<img src="{img}" alt="">
+        {#list item2.list as img}<img src="{img}" alt="">{/list}
 {/list}
 `       )
 
