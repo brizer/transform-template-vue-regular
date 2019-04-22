@@ -420,6 +420,58 @@ describe("test transform of build-in directives", () => {
         
     })
 
+    test('tag v-if --> {#if}{/if} param in express',()=>{
+        const source = unpad(
+`
+<div v-if="getShow() >=10">
+    <div>
+         <span>
+         <a v-if="hehe" href="http://www.baidu.com">123</a>
+         </span>
+    </div>
+</div>
+`       )
+
+        const expected = unpad(
+`
+{#if this.getShow() >=10}<div>
+    <div>
+         <span>
+         {#if hehe}<a href="http://www.baidu.com">123</a>{/if}
+         </span>
+    </div>
+</div>{/if}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+    test('tag v-if v-else --> {#if}{#else}{/if} param',()=>{
+        const source = unpad(
+`
+<div v-if="param">
+    123
+</div>
+<div v-else>
+    456
+</div>
+`       )
+
+        const expected = unpad(
+`
+{#if param}<div>
+    123
+</div>{#else}
+ <div>
+    456
+</div>{/if}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
     test('template v-if v-else --> {#if}{#else}{/if} param',()=>{
         const source = unpad(
 `
@@ -436,9 +488,47 @@ describe("test transform of build-in directives", () => {
 {#if param}
     123
 {#else}
+ 
     456
 {/if}
+`       )
 
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('tag v-if v-else --> {#if}{#else}{/if} param more complex',()=>{
+        const source = unpad(
+`
+<div v-if="param">
+    123
+</div>
+<div v-else>
+    456
+    <span v-if="getMore()>10">
+        9
+    </span>
+    <span v-else>
+        12
+    </span>
+</div>
+`       )
+
+        const expected = unpad(
+`
+{#if param}<div>
+    123
+</div>{#else}
+ <div>
+    456
+    {#if this.getMore()>10}<span>
+        9
+    </span>{#else}
+     <span>
+        12
+    </span>{/if}
+</div>{/if}
 `       )
 
         const regularStr = transform.transform(source)
@@ -471,14 +561,14 @@ describe("test transform of build-in directives", () => {
         {#if this.getSome()}
             <p>hehe</p>
         {#else}
+         
             <p>xixi</p>
         {/if}
-        
     </div>
 {#else}
+ 
     none
 {/if}
-
 `       )
 
         const regularStr = transform.transform(source)
@@ -505,12 +595,171 @@ describe("test transform of build-in directives", () => {
 {#if param>3}
     123
 {#elseif param>1}
+ 
     456
 {#else}
+ 
     789
 {/if}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+    test('template v-for --> {#list}{/list} param',()=>{
+        const source = unpad(
+`
+<template v-for="item in items">
+{item}
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#list items as item}
+{item}
+{/list}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('template v-for --> {#list}{/list} express',()=>{
+        const source = unpad(
+`
+<template v-for="item in getItems()">
+{item}
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#list this.getItems() as item}
+{item}
+{/list}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+    test('tag v-for --> {#list}{/list} param in express',()=>{
+        const source = unpad(
+`
+<ul v-for="item in getItems()">
+    <li v-for="i in item">
+        <div>{i.a}</div>
+    </li>
+</ul>
+`       )
+
+        const expected = unpad(
+`
+{#list this.getItems() as item}<ul>
+    {#list item as i}<li>
+        <div>{i.a}</div>
+    </li>{/list}
+</ul>{/list}
+`       )
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+    })
 
 
+
+    test('template v-for --> {#list}{/list} param in express',()=>{
+        const source = unpad(
+`
+<template v-for="item in getItems()">
+    <div>
+    <template v-for="i in item">
+        <span>{i.a}</span>
+    </template>
+    </div>
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#list this.getItems() as item}
+    <div>
+    {#list item as i}
+        <span>{i.a}</span>
+    {/list}
+    </div>
+{/list}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+
+    test('complex comprehensive demo',()=>{
+        const source = unpad(
+`
+<div @click='onClick($event)'>
+    <div v-if="mynum < 20">
+        <ul>
+            <li v-for="item2 in list2">
+                <span>{item2.a}</span>
+            </li>
+        </ul>
+    </div>
+    <div v-else-if="mynum < 10">
+        <p v-html="getHtml()"></p>
+    </div>
+    <div v-else>
+        <p v-show="isShow==true">
+            <template v-if="ok">ok</template>
+            <template v-else>cancel</template>
+        </p>
+    </div>
+    <div>
+        <span @mousemove="mouse(item)">123</span>
+        <div>
+            <template v-for="item in list">
+                <div>{item.a}</div>
+            </template>
+        </div>
+        <img :src="src" class="mss"/>
+    </div>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div on-click="{this.onClick($event)}">
+    {#if mynum < 20}<div>
+        <ul>
+            {#list list2 as item2}<li>
+                <span>{item2.a}</span>
+            </li>{/list}
+        </ul>
+    </div>{#elseif mynum < 10}
+     <div>
+        <p r-html="{this.getHtml()}"></p>
+    </div>{#else}
+     <div>
+        <p r-hide="{!(isShow==true)}">
+            {#if ok}ok{#else}
+             cancel{/if}
+        </p>
+    </div>{/if}
+    <div>
+        <span on-mousemove="{this.mouse(item)}">123</span>
+        <div>
+            {#list list as item}
+                <div>{item.a}</div>
+            {/list}
+        </div>
+        <img src="{src}" class="mss">
+    </div>
+</div>
 `       )
 
         const regularStr = transform.transform(source)
