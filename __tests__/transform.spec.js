@@ -475,7 +475,7 @@ describe("test transform of build-in directives", () => {
     test('template v-if v-else --> {#if}{#else}{/if} param',()=>{
         const source = unpad(
 `
-<template v-if="param">
+<template v-if="param.a">
     123
 </template>
 <template v-else>
@@ -485,7 +485,7 @@ describe("test transform of build-in directives", () => {
 
         const expected = unpad(
 `
-{#if param}
+{#if param.a}
     123
 {#else}
  
@@ -506,7 +506,7 @@ describe("test transform of build-in directives", () => {
 </div>
 <div v-else>
     456
-    <span v-if="getMore()>10">
+    <span v-if="getMore(item.a)>10">
         9
     </span>
     <span v-else>
@@ -522,7 +522,7 @@ describe("test transform of build-in directives", () => {
 </div>{#else}
  <div>
     456
-    {#if this.getMore()>10}<span>
+    {#if this.getMore(item.a)>10}<span>
         9
     </span>{#else}
      <span>
@@ -618,6 +618,26 @@ describe("test transform of build-in directives", () => {
         const expected = unpad(
 `
 {#list items as item}
+{item}
+{/list}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
+
+    test('template v-for --> {#list}{/list} param.param',()=>{
+        const source = unpad(
+`
+<template v-for="item in items.list">
+{item}
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#list items.list as item}
 {item}
 {/list}
 `       )
