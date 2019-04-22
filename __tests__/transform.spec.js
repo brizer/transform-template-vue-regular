@@ -647,6 +647,27 @@ describe("test transform of build-in directives", () => {
         
     })
 
+    test('template v-for --> {#list}{/list} param.param',()=>{
+        const source = unpad(
+`
+<template v-for="item2 in item.list">
+    <div @click="doSom()">{item2.value}</div>
+        <img v-for="img in item2.list" :src="img" alt="">
+</template>
+`       )
+
+        const expected = unpad(
+`
+{#list item.list as item2}
+    <div on-click="{this.doSom()}">{item2.value}</div>
+        {#list item2.list as img}<img src="{img}" alt="">
+{/list}
+`       )
+
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+        
+    })
     test('template v-for --> {#list}{/list} express',()=>{
         const source = unpad(
 `
