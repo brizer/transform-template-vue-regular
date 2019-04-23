@@ -490,12 +490,15 @@ describe("test transform of build-in directives", () => {
         expect(regularStr).toBe(expected);
         
     })
+
+
     test('template v-if v-else --> {#if}{#else}{/if} param',()=>{
         const source = unpad(
 `
 <template v-if="param.a">
     123
 </template>
+<!-- asdf -->
 <template v-else>
     456
 </template>
@@ -506,6 +509,7 @@ describe("test transform of build-in directives", () => {
 {#if param.a}
     123
 {#else}
+<!-- asdf -->
  
     456
 {/if}
@@ -824,5 +828,59 @@ describe("test transform of build-in directives", () => {
         const regularStr = transform.transform(source)
         expect(regularStr).toBe(expected);
         
+    })
+
+
+    test('tr td',()=>{
+        const source = unpad(
+`
+<div>
+    <tr>
+        <td>
+        <span>请上传图片</span>
+        </td>
+    </tr>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <tr>
+        <td>
+        <span>请上传图片</span>
+        </td>
+    </tr>
+</div>
+`       )
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+    })
+
+
+    test.only('custom component case conversion',()=>{
+        const source = unpad(
+`
+<div>
+    <tr>
+        <td>
+        <uxInput>请上传图片</uxInput>
+        </td>
+    </tr>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <tr>
+        <td>
+        <uxInput>请上传图片</uxInput>
+        </td>
+    </tr>
+</div>
+`       )
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
     })
 })

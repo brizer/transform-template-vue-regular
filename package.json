@@ -21,6 +21,6 @@
   },
   "dependencies": {
     "lodash": "^4.17.11",
-    "template-parse": "^1.1.4"
+    "template-parse": "^1.1.5"
   }
 }
