@@ -858,7 +858,7 @@ describe("test transform of build-in directives", () => {
     })
 
 
-    test.only('custom component case conversion',()=>{
+    test('custom component case conversion',()=>{
         const source = unpad(
 `
 <div>
@@ -883,4 +883,23 @@ describe("test transform of build-in directives", () => {
         const regularStr = transform.transform(source)
         expect(regularStr).toBe(expected);
     })
+    
+
+    test('binding func',()=>{
+      const source = unpad(
+`
+<div>
+  <span :class="isActive()?active:'abc'"></span>
+</div>
+`       )
+
+      const expected = unpad(
+`
+<div>
+  <span class="{this.isActive()?active:'abc'}"></span>
+</div>
+`       )
+      const regularStr = transform.transform(source)
+      expect(regularStr).toBe(expected);
+  })
 })
