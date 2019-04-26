@@ -858,7 +858,7 @@ describe("test transform of build-in directives", () => {
     })
 
 
-    test.only('custom component case conversion',()=>{
+    test('custom component case conversion',()=>{
         const source = unpad(
 `
 <div>
