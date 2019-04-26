@@ -23,7 +23,7 @@
   "homepage": "https://github.com/brizer/transform-template-vue-regular#readme",
   "devDependencies": {
     "husky": "^2.1.0",
-    "jest": "^24.7.1" 
+    "jest": "^24.7.1"
   },
   "dependencies": {
     "lodash": "^4.17.11",
