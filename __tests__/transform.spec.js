@@ -883,6 +883,32 @@ describe("test transform of build-in directives", () => {
         const regularStr = transform.transform(source)
         expect(regularStr).toBe(expected);
     })
+
+    test('custom params case conversion',()=>{
+        const source = unpad(
+`
+<div>
+    <tr>
+        <td>
+        <uxInput :aboutMe="hehe">请上传图片</uxInput>
+        </td>
+    </tr>
+</div>
+`       )
+
+        const expected = unpad(
+`
+<div>
+    <tr>
+        <td>
+        <uxInput aboutMe="{hehe}">请上传图片</uxInput>
+        </td>
+    </tr>
+</div>
+`       )
+        const regularStr = transform.transform(source)
+        expect(regularStr).toBe(expected);
+    })
     
 
     test('binding func',()=>{
