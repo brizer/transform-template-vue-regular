@@ -26,6 +26,6 @@
     "jest": "^24.7.1"
   },
   "dependencies": {
-    "template-parse": "^1.1.5"
+    "template-parse": "^1.1.6"
   }
 }

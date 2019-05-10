@@ -29,6 +29,32 @@ describe("test transform", () => {
     const regularStr = transform.transform(source)
     expect(regularStr).toBe(expected);
   });
+  test("test transform @click", () => {
+    const source = unpad(`
+        <div>
+            <div>
+                hehe
+            </div>
+            <div>
+                <p @click="something=something+1">
+                    this is me
+                </p>
+            </div>
+        </div>`);
+    const expected = unpad(`
+    <div>
+        <div>
+            hehe
+        </div>
+        <div>
+            <p on-click="{something=something+1}">
+                this is me
+            </p>
+        </div>
+    </div>`);
+    const regularStr = transform.transform(source)
+    expect(regularStr).toBe(expected);
+  });
   test("test transform :item", () => {
     const source = unpad(`
         <div>
